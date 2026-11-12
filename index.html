@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2E5BFF">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>نور كيدز – NOUR KIDS AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#14308F;--blue:#2E5BFF;--gold:#FFC53D;--white:#FFFFFF;--sky:#EAF1FF;--ink:#14224D;
+--bg:#EAF1FF;--card-text:#fff;--nav:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1B44;--ink:#fff;--nav:#1A2A66}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Baloo Bhaijaan 2",Tahoma,"Segoe UI",sans-serif;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:0 14px}
+header{text-align:center;padding:14px 0 4px}
+.logo{font-weight:800;font-size:15px;color:var(--blue);letter-spacing:.5px;direction:ltr}
+.hero{display:flex;align-items:center;gap:10px;justify-content:center}
+.bubble{background:#fff;color:#14224D;border-radius:22px 22px 22px 6px;padding:12px 16px;font-size:19px;font-weight:700;max-width:200px;line-height:1.35;box-shadow:0 4px 0 rgba(20,48,143,.15);cursor:pointer}
+#nour{width:132px;height:150px;flex:none;animation:wave 2.4s ease-in-out 1}
+@keyframes wave{0%{transform:translateY(24px) rotate(-6deg);opacity:0}40%{transform:translateY(-8px) rotate(4deg);opacity:1}70%{transform:rotate(-3deg)}100%{transform:none}}
+#nour.talk .mouth{animation:talk .25s infinite alternate}
+@keyframes talk{to{transform:scaleY(1.9)}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 14px;flex:1;align-content:start}
+.tile{border:0;border-radius:26px;padding:14px 8px;min-height:118px;color:#fff;font:inherit;font-weight:800;font-size:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.22);transition:transform .12s,box-shadow .12s}
+.tile:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.22)}
+.tile:focus-visible,.nav button:focus-visible,.back:focus-visible{outline:4px solid var(--gold);outline-offset:2px}
+.tile .e{font-size:44px;line-height:1}
+.tile small{font-size:13px;font-weight:500;opacity:.92}
+.t1{background:#1F8A5B}.t2{background:#E0457B}.t3{background:#2E5BFF}.t4{background:#E8700A}.t5{background:#8A4FD6}.t6{background:#0F7C99}
+.nav{display:flex;gap:8px;background:var(--nav);border-radius:26px;padding:8px;margin-bottom:12px;box-shadow:0 4px 0 rgba(20,48,143,.15)}
+.nav button{flex:1;border:0;background:transparent;font:inherit;font-weight:700;font-size:14px;color:var(--ink);padding:8px 2px;border-radius:18px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav .e{font-size:26px}
+.world{display:none;flex-direction:column;align-items:center;text-align:center;padding:12px 0;flex:1}
+.world.on{display:flex}
+.world .big{font-size:84px;margin:12px 0 4px}
+.world h2{margin:0;font-size:30px}
+.world p{font-size:18px;max-width:300px;margin:10px 0 18px}
+.back{border:0;background:var(--gold);color:#14224D;font:inherit;font-weight:800;font-size:20px;padding:12px 30px;border-radius:999px;box-shadow:0 5px 0 #C9951A;cursor:pointer}
+.home.off{display:none}
+.stars{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:12px;background:var(--gold);color:#14224D;font-weight:800;border-radius:999px;padding:2px 12px;font-size:16px}
+.lt{display:none;flex-direction:column;flex:1;padding:12px 0}.lt.on{display:flex}
+.card{background:#fff;color:#14224D;border-radius:28px;padding:14px;text-align:center;box-shadow:0 6px 0 rgba(20,48,143,.18)}
+.card .L{font-size:92px;font-weight:800;color:#E0457B;line-height:1.15}
+.card .P{font-size:80px;line-height:1.1}
+.card .Wd{font-size:30px;font-weight:800}
+.row{display:flex;gap:10px;justify-content:center;margin-top:10px}
+.row .back{font-size:17px;padding:10px 18px}
+.lgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.lgrid button{border:0;border-radius:18px;background:#E0457B;color:#fff;font:inherit;font-weight:800;font-size:34px;padding:6px 0;box-shadow:0 4px 0 rgba(0,0,0,.22);cursor:pointer}
+.lgrid button.on{background:var(--gold);color:#14224D}
+.lgrid button:focus-visible{outline:4px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#nour,.mouth{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="stars">⭐ <span id="st">0</span></div>
+<div class="app">
+<div class="home" id="home">
+<header>
+<div class="logo">NOUR KIDS AI</div>
+<div class="hero">
+<svg id="nour" viewBox="0 0 132 150" role="img" aria-label="الروبوت نور">
+<line x1="66" y1="8" x2="66" y2="26" stroke="#14308F" stroke-width="5" stroke-linecap="round"/>
+<circle cx="66" cy="9" r="7" fill="#FFC53D"/>
+<rect x="14" y="26" width="104" height="80" rx="30" fill="#2E5BFF"/>
+<rect x="24" y="36" width="84" height="58" rx="22" fill="#fff"/>
+<circle cx="48" cy="62" r="11" fill="#14308F"/><circle cx="84" cy="62" r="11" fill="#14308F"/>
+<circle cx="52" cy="58" r="4" fill="#FFC53D"/><circle cx="88" cy="58" r="4" fill="#FFC53D"/>
+<g class="mouth" style="transform-origin:66px 82px"><path d="M52 80 Q66 94 80 80" fill="none" stroke="#14308F" stroke-width="5" stroke-linecap="round"/></g>
+<rect x="4" y="52" width="10" height="26" rx="5" fill="#FFC53D"/><rect x="118" y="52" width="10" height="26" rx="5" fill="#FFC53D"/>
+<rect x="34" y="110" width="64" height="34" rx="14" fill="#FFC53D"/>
+<circle cx="66" cy="127" r="8" fill="#fff"/>
+</svg>
+<div class="bubble" id="hello" tabindex="0" role="button">أهلاً يا بطل! أنا نور، هيا نتعلم معاً</div>
+</div>
+</header>
+<main class="grid">
+<button class="tile t1" data-w="0"><span class="e">📖</span>القرآن الكريم<small>جزء عمّ</small></button>
+<button class="tile t2" data-w="1"><span class="e">🔤</span>الحروف العربية<small>أ ب ت</small></button>
+<button class="tile t3" data-w="2"><span class="e">🇬🇧</span>English ABC<small>A B C</small></button>
+<button class="tile t4" data-w="3"><span class="e">🔢</span>الحساب<small>+ − ×</small></button>
+<button class="tile t5" data-w="4"><span class="e">🐘</span>الحيوانات<small>صور وأصوات</small></button>
+<button class="tile t6" data-w="5"><span class="e">🤖</span>اسأل نور<small>المعلم الذكي</small></button>
+</main>
+<nav class="nav">
+<button data-n="إنجازاتي"><span class="e">⭐</span>إنجازاتي</button>
+<button data-n="ملفي"><span class="e">👦</span>ملفي</button>
+<button data-n="الوالدين"><span class="e">👨‍👩‍👧</span>للوالدين</button>
+</nav>
+</div>
+<section class="world" id="world" aria-live="polite">
+<div class="big" id="wE"></div>
+<h2 id="wT"></h2>
+<p id="wP"></p>
+<button class="back" id="back">رجوع للرئيسية</button>
+</section>
+<section class="lt" id="lt">
+<div class="card"><div class="L" id="lL"></div><div class="P" id="lP"></div><div class="Wd" id="lW"></div><div id="vn" aria-live="polite" style="font-size:14px;color:#B3261E;margin-top:6px"></div>
+<div class="row"><button class="back" id="lpr">السابق</button><button class="back" id="lsp" aria-label="استمع">🔊</button><button class="back" id="lnx">التالي</button></div></div>
+<div class="lgrid" id="lg"></div>
+<div class="row"><button class="back" id="lbk">رجوع للرئيسية</button></div>
+</section>
+</div>
+<script>
+var W=[["📖","القرآن الكريم","هنا سيسمع الطفل سور جزء عمّ ويرددها مع نور."],
+["🔤","الحروف العربية","كل حرف بصورته ونطقه، مثل: أ أسد."],
+["🇬🇧","English ABC","Every letter comes with a picture and its sound."],
+["🔢","الحساب","جمع وطرح وضرب بألعاب بسيطة."],
+["🐘","الحيوانات","صورة كل حيوان واسمه وصوته."],
+["🤖","اسأل نور","اسأل نور أي سؤال وسيجيبك."]];
+var stars=0,home=document.getElementById("home"),world=document.getElementById("world"),nour=document.getElementById("nour");
+function note(m){var n=document.getElementById("vn");if(n)n.textContent=m||""}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}catch(e){}
+function say(t){
+if(!("speechSynthesis" in window)){note("الصوت لا يعمل داخل هذا العرض. افتح الرابط في متصفح كروم.");return}
+try{var vs=speechSynthesis.getVoices(),v=null;
+for(var i=0;i<vs.length;i++){if(vs[i].lang&&vs[i].lang.toLowerCase().indexOf("ar")===0){v=vs[i];break}}
+if(vs.length&&!v){note("لا يوجد صوت عربي في هاتفك. ثبّت «خدمات Google للكلام» ثم حمّل اللغة العربية من إعدادات الهاتف.")}else{note("")}
+var u=new SpeechSynthesisUtterance(t);u.lang=v?v.lang:"ar-SA";if(v){u.voice=v}u.rate=.9;u.pitch=1.3;
+u.onstart=function(){nour.classList.add("talk")};u.onend=function(){nour.classList.remove("talk")};
+u.onerror=function(){nour.classList.remove("talk");note("تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم.")};
+speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},60)}catch(e){note("تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم.")}}
+function show(e,t,p,speak){document.getElementById("wE").textContent=e;document.getElementById("wT").textContent=t;
+document.getElementById("wP").textContent=p;home.classList.add("off");world.classList.add("on");if(speak)say(speak)}
+document.querySelectorAll(".tile").forEach(function(b){b.onclick=function(){var w=W[b.dataset.w];
+if(b.dataset.w==="1"){openLt();return}stars++;document.getElementById("st").textContent=stars;show(w[0],w[1],w[2]+" هذا القسم قيد البناء.","مرحباً بك في "+w[1])}});
+document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){
+var e=b.querySelector(".e").textContent;show(e,b.dataset.n,"هذه الصفحة قيد التصميم.","")}});
+document.getElementById("back").onclick=function(){world.classList.remove("on");home.classList.remove("off");try{speechSynthesis.cancel()}catch(e){}};
+var A=[["أ","ألف","أرنب","🐰"],["ب","باء","بطة","🦆"],["ت","تاء","تفاحة","🍎"],["ث","ثاء","ثعلب","🦊"],["ج","جيم","جمل","🐪"],["ح","حاء","حصان","🐴"],["خ","خاء","خروف","🐑"],["د","دال","دب","🐻"],["ذ","ذال","ذرة","🌽"],["ر","راء","ريشة","🪶"],["ز","زاي","زرافة","🦒"],["س","سين","سمكة","🐟"],["ش","شين","شمس","☀️"],["ص","صاد","صقر","🦅"],["ض","ضاد","ضفدع","🐸"],["ط","طاء","طائرة","✈️"],["ظ","ظاء","ظرف","✉️"],["ع","عين","عنب","🍇"],["غ","غين","غيمة","☁️"],["ف","فاء","فيل","🐘"],["ق","قاف","قمر","🌙"],["ك","كاف","كرة","⚽"],["ل","لام","ليمون","🍋"],["م","ميم","موز","🍌"],["ن","نون","نجمة","⭐"],["هـ","هاء","هدية","🎁"],["و","واو","وردة","🌹"],["ي","ياء","يد","✋"]];
+var lt=document.getElementById("lt"),lg=document.getElementById("lg"),ci=0;
+A.forEach(function(a,i){var b=document.createElement("button");b.textContent=a[0];b.setAttribute("aria-label",a[1]);b.onclick=function(){pick(i,true)};lg.appendChild(b)});
+function pick(i,sp){ci=(i+A.length)%A.length;var a=A[ci];document.getElementById("lL").textContent=a[0];document.getElementById("lP").textContent=a[3];
+document.getElementById("lW").textContent=a[2];Array.prototype.forEach.call(lg.children,function(c,j){c.classList.toggle("on",j===ci)});
+if(sp){stars++;document.getElementById("st").textContent=stars;sayL(ci)}}
+function sayL(i){var a=A[i],txt="حرف "+a[1]+"، "+a[2],done=false;
+function fb(){if(!done){done=true;say(txt)}}
+try{var au=new Audio("audio/ar/"+(i<9?"0":"")+(i+1)+".mp3");
+au.onplay=function(){nour.classList.add("talk")};au.onended=function(){nour.classList.remove("talk")};
+au.onerror=function(){nour.classList.remove("talk");fb()};
+var p=au.play();if(p&&p.catch)p.catch(function(){fb()})}catch(e){fb()}}
+function openLt(){home.classList.add("off");lt.classList.add("on");pick(0,true)}
+document.getElementById("lpr").onclick=function(){pick(ci-1,true)};
+document.getElementById("lnx").onclick=function(){pick(ci+1,true)};
+document.getElementById("lsp").onclick=function(){var a=A[ci];sayL(ci)};
+document.getElementById("lbk").onclick=function(){lt.classList.remove("on");home.classList.remove("off");try{speechSynthesis.cancel()}catch(e){}};
+document.getElementById("hello").onclick=function(){say("أهلاً يا بطل! أنا نور، هيا نتعلم معاً")};
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
+</script>
+</body>
+</html>
