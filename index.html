@@ -114,6 +114,8 @@ header{text-align:center;padding:14px 0 4px}
 <div class="card"><div style="font-size:56px">📖</div><div class="Q" id="qT"></div><div class="Wd" id="qN" style="font-size:20px"></div>
 <div id="qn" aria-live="polite" style="font-size:14px;color:#B3261E;margin-top:6px"></div>
 <div class="row"><button class="back" id="qpr">السابق</button><button class="back" id="qpp" aria-label="تشغيل">▶️</button><button class="back" id="qrp" aria-label="تكرار">🔁</button><button class="back" id="qnx">التالي</button></div></div>
+<div class="row"><button class="back" id="qdl" style="font-size:16px">⬇️ تحميل الجزء للاستماع دون إنترنت</button></div>
+<div id="qdn" aria-live="polite" style="text-align:center;font-size:14px;margin-top:6px"></div>
 <div class="qgrid" id="qg"></div>
 <div class="row"><button class="back" id="qbk">رجوع للرئيسية</button></div>
 </section>
@@ -176,14 +178,31 @@ function qpick(i,go){qi=(i+S.length)%S.length;var x=S[qi];document.getElementByI
 document.getElementById("qN").textContent="عدد آياتها: "+x[2];qnote("");
 Array.prototype.forEach.call(qg.children,function(c,j){c.classList.toggle("on",j===qi)});
 qa.pause();qcur=-1;document.getElementById("qpp").textContent="▶️";if(go)qplay()}
-function qplay(){if(!QBASE){qnote("رابط التلاوة لم يُضف بعد، سنضيفه في الخطوة القادمة.");return}
-if(qcur!==qi){qa.src=QBASE+("00"+S[qi][0]).slice(-3)+".mp3";qtry=0;qcur=qi;stars++;document.getElementById("st").textContent=stars}
-var p=qa.play();if(p&&p.catch)p.catch(function(){qnote("تعذّر تشغيل التلاوة. تأكد من الإنترنت.")})}
+function qsrc(i){var n=S[i][0],net=QBASE+("00"+n).slice(-3)+".mp3";
+if(!("caches" in window))return Promise.resolve(net);
+return caches.open("nour-audio").then(function(c){return c.match("/_q/"+n)}).then(function(r){return r?r.blob().then(function(b){return URL.createObjectURL(b)}):net}).catch(function(){return net})}
+function qgo(){var p=qa.play();if(p&&p.catch)p.catch(function(){qnote("تعذّر تشغيل التلاوة. تأكد من الإنترنت.")})}
+function qplay(){if(!QBASE){qnote("رابط التلاوة لم يُضف بعد.");return}
+if(qcur!==qi){var i=qi;qcur=i;qtry=0;stars++;document.getElementById("st").textContent=stars;
+qsrc(i).then(function(u){if(qcur===i){qa.src=u;qgo()}})}else{qgo()}}
+async function qdl(){var d=document.getElementById("qdn"),btn=document.getElementById("qdl");
+if(!("caches" in window)){d.textContent="متصفحك لا يدعم التحميل للاستماع دون إنترنت.";return}
+btn.disabled=true;var ok=0;
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+try{var c=await caches.open("nour-audio");
+for(var i=0;i<S.length;i++){var n=S[i][0];d.textContent="جارٍ التحميل... "+ok+" من "+S.length;
+if(await c.match("/_q/"+n)){ok++;continue}
+var r=await fetch(QBASE+("00"+n).slice(-3)+".mp3");if(!r.ok)r=await fetch(QBASE+n+".mp3");
+if(!r.ok)throw new Error("http");await c.put("/_q/"+n,r);ok++}
+d.textContent="✅ تم تحميل الجزء كاملاً، ويعمل الآن دون إنترنت"}
+catch(e){d.textContent="توقف التحميل بعد "+ok+" سورة. "+(e instanceof TypeError?"الموقع لا يسمح بالتحميل المباشر.":"تأكد من الإنترنت ثم أعد المحاولة.")}
+btn.disabled=false}
 qa.onplay=function(){document.getElementById("qpp").textContent="⏸️"};
 qa.onpause=function(){document.getElementById("qpp").textContent="▶️"};
 qa.onerror=function(){if(qtry===0){qtry=1;qa.src=QBASE+S[qi][0]+".mp3";var p=qa.play();if(p&&p.catch)p.catch(function(){})}else{qnote("تعذّر تحميل التلاوة. تأكد من الإنترنت.")}};
 qa.onended=function(){if(qrep){qa.currentTime=0;qa.play()}};
 function openQr(){home.classList.add("off");qr.classList.add("on");qpick(qi,false)}
+document.getElementById("qdl").onclick=qdl;
 document.getElementById("qpp").onclick=function(){if(!qa.paused){qa.pause()}else{qplay()}};
 document.getElementById("qpr").onclick=function(){qpick(qi-1,true)};
 document.getElementById("qnx").onclick=function(){qpick(qi+1,true)};
