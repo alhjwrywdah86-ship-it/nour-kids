@@ -49,7 +49,7 @@ header{text-align:center;padding:14px 0 4px}
 .card .P{font-size:80px;line-height:1.1}
 .card .Wd{font-size:30px;font-weight:800}
 .row{display:flex;gap:10px;justify-content:center;margin-top:10px}
-.row .back{font-size:17px;padding:10px 18px}
+.row .back{font-size:17px;padding:10px 12px}
 .lgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
 .lgrid button{border:0;border-radius:18px;background:#E0457B;color:#fff;font:inherit;font-weight:800;font-size:34px;padding:6px 0;box-shadow:0 4px 0 rgba(0,0,0,.22);cursor:pointer}
 .lgrid button.on{background:var(--gold);color:#14224D}
@@ -100,8 +100,8 @@ header{text-align:center;padding:14px 0 4px}
 <button class="back" id="back">رجوع للرئيسية</button>
 </section>
 <section class="lt" id="lt">
-<div class="card"><div class="L" id="lL"></div><div class="P" id="lP"></div><div class="Wd" id="lW"></div><div id="vn" aria-live="polite" style="font-size:14px;color:#B3261E;margin-top:6px"></div>
-<div class="row"><button class="back" id="lpr">السابق</button><button class="back" id="lsp" aria-label="استمع">🔊</button><button class="back" id="lnx">التالي</button></div></div>
+<div class="card"><div class="L" id="lL"></div><div class="P" id="lP"></div><div class="Wd" id="lW"></div><div id="vn" aria-live="polite" style="font-size:14px;color:#B3261E;margin-top:6px"></div><div id="vname" style="font-size:13px;color:#5A6A99;margin-top:4px"></div>
+<div class="row"><button class="back" id="lpr">السابق</button><button class="back" id="lsp" aria-label="استمع">🔊</button><button class="back" id="lvo" aria-label="تغيير الصوت">🎙️</button><button class="back" id="lnx">التالي</button></div></div>
 <div class="lgrid" id="lg"></div>
 <div class="row"><button class="back" id="lbk">رجوع للرئيسية</button></div>
 </section>
@@ -116,15 +116,21 @@ var W=[["📖","القرآن الكريم","هنا سيسمع الطفل سور 
 var stars=0,home=document.getElementById("home"),world=document.getElementById("world"),nour=document.getElementById("nour");
 function note(m){var n=document.getElementById("vn");if(n)n.textContent=m||""}
 try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}catch(e){}
+var TT=[["أَلِف","أَرْنَب"],["بَاء","بَطَّة"],["تَاء","تُفَّاحَة"],["ثَاء","ثَعْلَب"],["جِيم","جَمَل"],["حَاء","حِصَان"],["خَاء","خَرُوف"],["دَال","دُبّ"],["ذَال","ذُرَة"],["رَاء","رِيشَة"],["زَاي","زَرَافَة"],["سِين","سَمَكَة"],["شِين","شَمْس"],["صَاد","صَقْر"],["ضَاد","ضِفْدَع"],["طَاء","طَائِرَة"],["ظَاء","ظَرْف"],["عَيْن","عِنَب"],["غَيْن","غَيْمَة"],["فَاء","فِيل"],["قَاف","قَمَر"],["كَاف","كُرَة"],["لَام","لَيْمُون"],["مِيم","مَوْز"],["نُون","نَجْمَة"],["هَاء","هَدِيَّة"],["وَاو","وَرْدَة"],["يَاء","يَد"]];
+function ttsText(i){return "حَرْف "+TT[i][0]+". "+TT[i][1]}
+function arV(){var r=[];try{r=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf("ar")===0})}catch(e){}return r}
+var vi=0;try{vi=parseInt(localStorage.getItem("nv"))||0}catch(e){}
 function say(t){
 if(!("speechSynthesis" in window)){note("الصوت لا يعمل داخل هذا العرض. افتح الرابط في متصفح كروم.");return}
-try{var vs=speechSynthesis.getVoices(),v=null;
-for(var i=0;i<vs.length;i++){if(vs[i].lang&&vs[i].lang.toLowerCase().indexOf("ar")===0){v=vs[i];break}}
-if(vs.length&&!v){note("لا يوجد صوت عربي في هاتفك. ثبّت «خدمات Google للكلام» ثم حمّل اللغة العربية من إعدادات الهاتف.")}else{note("")}
-var u=new SpeechSynthesisUtterance(t);u.lang=v?v.lang:"ar-SA";if(v){u.voice=v}u.rate=.9;u.pitch=1.3;
+try{var l=arV(),v=l.length?l[vi%l.length]:null;
+if(!l.length&&speechSynthesis.getVoices().length){note("لا يوجد صوت عربي في هاتفك. ثبّت «خدمات Google للكلام» ثم حمّل اللغة العربية من إعدادات الهاتف.")}else{note("")}
+var vn=document.getElementById("vname");if(vn)vn.textContent=v?("الصوت: "+v.name):"";
+var u=new SpeechSynthesisUtterance(t);u.lang=v?v.lang:"ar-SA";if(v){u.voice=v}u.rate=.8;u.pitch=1.15;
 u.onstart=function(){nour.classList.add("talk")};u.onend=function(){nour.classList.remove("talk")};
 u.onerror=function(){nour.classList.remove("talk");note("تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم.")};
 speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},60)}catch(e){note("تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم.")}}
+function cycleVoice(){var l=arV();if(!l.length){note("لا يوجد صوت عربي في هاتفك. ثبّت «خدمات Google للكلام» ثم حمّل اللغة العربية من إعدادات الهاتف.");return}
+vi=(vi+1)%l.length;try{localStorage.setItem("nv",vi)}catch(e){}say(ttsText(ci))}
 function show(e,t,p,speak){document.getElementById("wE").textContent=e;document.getElementById("wT").textContent=t;
 document.getElementById("wP").textContent=p;home.classList.add("off");world.classList.add("on");if(speak)say(speak)}
 document.querySelectorAll(".tile").forEach(function(b){b.onclick=function(){var w=W[b.dataset.w];
@@ -138,7 +144,7 @@ A.forEach(function(a,i){var b=document.createElement("button");b.textContent=a[0
 function pick(i,sp){ci=(i+A.length)%A.length;var a=A[ci];document.getElementById("lL").textContent=a[0];document.getElementById("lP").textContent=a[3];
 document.getElementById("lW").textContent=a[2];Array.prototype.forEach.call(lg.children,function(c,j){c.classList.toggle("on",j===ci)});
 if(sp){stars++;document.getElementById("st").textContent=stars;sayL(ci)}}
-function sayL(i){var a=A[i],txt="حرف "+a[1]+"، "+a[2],n=(i<9?"0":"")+(i+1),ex=["mp3","m4a","ogg","wav"],k=0;
+function sayL(i){var a=A[i],txt=ttsText(i),n=(i<9?"0":"")+(i+1),ex=["mp3","m4a","ogg","wav"],k=0;
 function nx(){if(k>=ex.length){nour.classList.remove("talk");say(txt);return}
 var au=new Audio("ar-"+n+"."+ex[k++]);
 au.onplay=function(){nour.classList.add("talk")};au.onended=function(){nour.classList.remove("talk")};
@@ -149,6 +155,7 @@ document.getElementById("lpr").onclick=function(){pick(ci-1,true)};
 document.getElementById("lnx").onclick=function(){pick(ci+1,true)};
 document.getElementById("lsp").onclick=function(){var a=A[ci];sayL(ci)};
 document.getElementById("lbk").onclick=function(){lt.classList.remove("on");home.classList.remove("off");try{speechSynthesis.cancel()}catch(e){}};
+document.getElementById("lvo").onclick=cycleVoice;
 document.getElementById("hello").onclick=function(){say("أهلاً يا بطل! أنا نور، هيا نتعلم معاً")};
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
 </script>
