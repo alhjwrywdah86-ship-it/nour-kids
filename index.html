@@ -175,15 +175,19 @@ var TT=[["أَلِف","أَرْنَب"],["بَاء","بَطَّة"],["تَاء",
 function ttsText(i){return "حَرْف "+TT[i][0]+". "+TT[i][1]}
 function arV(){var r=[];try{r=speechSynthesis.getVoices().filter(function(v){return v.lang&&v.lang.toLowerCase().indexOf("ar")===0})}catch(e){}return r}
 var vi=0;try{vi=parseInt(localStorage.getItem("nv"))||0}catch(e){}
-function say(t){
-if(!("speechSynthesis" in window)){note("الصوت لا يعمل داخل هذا العرض. افتح الرابط في متصفح كروم.");return}
-try{var l=arV(),v=l.length?l[vi%l.length]:null;
-if(!l.length&&speechSynthesis.getVoices().length){note("لا يوجد صوت عربي في هاتفك. ثبّت «خدمات Google للكلام» ثم حمّل اللغة العربية من إعدادات الهاتف.")}else{note("")}
+function online(t,lang,done){try{var au=new Audio("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl="+lang+"&q="+encodeURIComponent(t));
+au.onerror=function(){if(done)done()};var p=au.play();if(p&&p.catch)p.catch(function(){if(done)done()});window._au=au}catch(e){if(done)done()}}
+function say(t){var plain=t.replace(/[\u064B-\u0652]/g,"");note("");try{if(window._au)window._au.pause()}catch(e){}
+var fell=false,started=false;
+function fb(){if(fell)return;fell=true;try{speechSynthesis.cancel()}catch(e){}nour.classList.remove("talk");online(plain,"ar",function(){note("تعذّر تشغيل الصوت. تأكد من الإنترنت.")})}
+if(!("speechSynthesis" in window)){fb();return}
+try{var vs=speechSynthesis.getVoices(),l=arV();if(vs.length&&!l.length){fb();return}
+var v=l.length?l[vi%l.length]:null;
 var vn=document.getElementById("vname");if(vn)vn.textContent=v?("الصوت: "+v.name):"";
 var u=new SpeechSynthesisUtterance(t);u.lang=v?v.lang:"ar-SA";if(v){u.voice=v}u.rate=.8;u.pitch=1.15;
-u.onstart=function(){nour.classList.add("talk")};u.onend=function(){nour.classList.remove("talk")};
-u.onerror=function(){nour.classList.remove("talk");note("تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم.")};
-speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},60)}catch(e){note("تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم.")}}
+u.onstart=function(){started=true;nour.classList.add("talk")};u.onend=function(){nour.classList.remove("talk")};
+u.onerror=function(){fb()};
+speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},60);setTimeout(function(){if(!started)fb()},2500)}catch(e){fb()}}
 function cycleVoice(){var l=arV();if(!l.length){note("لا يوجد صوت عربي في هاتفك. ثبّت «خدمات Google للكلام» ثم حمّل اللغة العربية من إعدادات الهاتف.");return}
 vi=(vi+1)%l.length;try{localStorage.setItem("nv",vi)}catch(e){}say(ttsText(ci))}
 function show(e,t,p,speak){document.getElementById("wE").textContent=e;document.getElementById("wT").textContent=t;
@@ -252,14 +256,17 @@ document.getElementById("qbk").onclick=function(){qa.pause();qr.classList.remove
 var E=[["A","Apple","🍎"],["B","Ball","⚽"],["C","Cat","🐱"],["D","Dog","🐶"],["E","Elephant","🐘"],["F","Fish","🐟"],["G","Grapes","🍇"],["H","Horse","🐴"],["I","Ice cream","🍦"],["J","Jeep","🚙"],["K","Key","🔑"],["L","Lion","🦁"],["M","Moon","🌙"],["N","Nose","👃"],["O","Orange","🍊"],["P","Pizza","🍕"],["Q","Queen","👑"],["R","Rabbit","🐰"],["S","Sun","☀️"],["T","Tree","🌳"],["U","Umbrella","☂️"],["V","Violin","🎻"],["W","Watermelon","🍉"],["X","X-ray","🦴"],["Y","Yellow","💛"],["Z","Zebra","🦓"]];
 var en=document.getElementById("en"),eg=document.getElementById("eg"),ei=0;
 E.forEach(function(x,i){var b=document.createElement("button");b.textContent=x[0];b.setAttribute("aria-label",x[1]);b.onclick=function(){epick(i,true)};eg.appendChild(b)});
-function esay(t){var m=document.getElementById("en2");m.textContent="";
-if(!("speechSynthesis" in window)){m.textContent="الصوت لا يعمل داخل هذا العرض. افتح الرابط في كروم.";return}
+function esay(t){var m=document.getElementById("en2");m.textContent="";try{if(window._au)window._au.pause()}catch(e){}
+var fell=false,started=false;
+function fb(){if(fell)return;fell=true;try{speechSynthesis.cancel()}catch(e){}online(t,"en",function(){m.textContent="تعذّر تشغيل الصوت. تأكد من الإنترنت."})}
+if(!("speechSynthesis" in window)){fb();return}
 try{var vs=speechSynthesis.getVoices(),v=null,i;
 for(i=0;i<vs.length;i++){if(vs[i].lang==="en-US"){v=vs[i];break}}
 if(!v){for(i=0;i<vs.length;i++){if(vs[i].lang&&vs[i].lang.toLowerCase().indexOf("en")===0){v=vs[i];break}}}
+if(vs.length&&!v){fb();return}
 var u=new SpeechSynthesisUtterance(t);u.lang=v?v.lang:"en-US";if(v)u.voice=v;u.rate=.8;u.pitch=1.1;
-u.onerror=function(){m.textContent="تعذّر تشغيل الصوت. جرّب فتح الرابط في كروم."};
-speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},60)}catch(e){m.textContent="تعذّر تشغيل الصوت."}}
+u.onstart=function(){started=true};u.onerror=function(){fb()};
+speechSynthesis.cancel();setTimeout(function(){speechSynthesis.speak(u)},60);setTimeout(function(){if(!started)fb()},2500)}catch(e){fb()}}
 function epick(i,sp){ei=(i+E.length)%E.length;var x=E[ei];document.getElementById("eL").textContent=x[0]+x[0].toLowerCase();
 document.getElementById("eP").textContent=x[2];document.getElementById("eW").textContent=x[1];
 Array.prototype.forEach.call(eg.children,function(c,j){c.classList.toggle("on",j===ei)});
