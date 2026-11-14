@@ -109,6 +109,7 @@ header{text-align:center;padding:14px 0 4px}
 <button data-n="ملفي"><span class="e">👦</span>ملفي</button>
 <button data-n="الوالدين"><span class="e">👨‍👩‍👧</span>للوالدين</button>
 </nav>
+<div style="text-align:center;margin-bottom:10px"><button class="opb" id="dgb" style="font-size:15px">🔧 اختبار الصوت · v6</button></div>
 </div>
 <section class="world" id="world" aria-live="polite">
 <div class="big" id="wE"></div>
@@ -151,6 +152,12 @@ header{text-align:center;padding:14px 0 4px}
 <div class="row"><button class="back" id="apr">السابق</button><button class="back" id="asp" aria-label="استمع">🔊</button><button class="back" id="anx">التالي</button></div></div>
 <div class="agrid" id="ag"></div>
 <div class="row"><button class="back" id="abk">رجوع للرئيسية</button></div>
+</section>
+<section class="lt" id="dg">
+<div class="card"><h2 style="margin:0 0 8px">اختبار الصوت v6</h2>
+<div class="row" style="flex-wrap:wrap"><button class="back" id="d1">1) صافرة</button><button class="back" id="d2">2) صوت الهاتف</button><button class="back" id="d3">3) صوت Google</button><button class="back" id="d4">4) تلاوة</button></div>
+<pre id="dlog" dir="ltr" style="text-align:left;white-space:pre-wrap;font-size:13px;margin:10px 0 0"></pre></div>
+<div class="row"><button class="back" id="dbk">رجوع</button></div>
 </section>
 <section class="lt" id="tc">
 <div class="card"><div style="font-size:64px">🤖</div>
@@ -321,6 +328,19 @@ tI.onkeydown=function(e){if(e.key==="Enter")ask()};
 var SR=window.SpeechRecognition||window.webkitSpeechRecognition,tM=document.getElementById("tM");
 if(!SR){tM.style.display="none"}else{tM.onclick=function(){try{var r=new SR();r.lang="ar-SA";r.onresult=function(e){tI.value=e.results[0][0].transcript;ask()};r.onerror=function(){treply("لم أسمعك جيداً، حاول مرة أخرى")};r.start()}catch(e){treply("الميكروفون غير متاح الآن")}}}
 document.getElementById("tbk").onclick=toHome;
+function dl(m){document.getElementById("dlog").textContent+=m+"\n"}
+function dau(au,name){["loadstart","canplay","playing","ended","stalled","suspend"].forEach(function(ev){au.addEventListener(ev,function(){dl(name+" "+ev)})});
+au.addEventListener("error",function(){dl(name+" ERROR code="+(au.error?au.error.code:"?")+" "+(au.error?au.error.message:""))});
+var p=au.play();if(p&&p.catch)p.catch(function(e){dl(name+" play() rejected: "+e.name+" "+e.message)})}
+document.getElementById("dgb").onclick=function(){home.classList.add("off");document.getElementById("dg").classList.add("on");document.getElementById("dlog").textContent="الجهاز: "+navigator.userAgent.slice(0,90)+"\n"};
+document.getElementById("dbk").onclick=toHome;
+document.getElementById("d1").onclick=function(){try{var C=window.AudioContext||window.webkitAudioContext,c=new C(),o=c.createOscillator();o.connect(c.destination);o.frequency.value=440;o.start();dl("beep start ctx="+c.state);setTimeout(function(){o.stop();dl("beep end")},600)}catch(e){dl("beep error "+e)}};
+document.getElementById("d2").onclick=function(){try{dl("speechSynthesis="+("speechSynthesis" in window));var vs=speechSynthesis.getVoices();
+dl("voices="+vs.length+" arabic="+arV().length+" langs="+vs.slice(0,6).map(function(v){return v.lang}).join(","));
+var u=new SpeechSynthesisUtterance("hello, this is a test");u.onstart=function(){dl("tts start")};u.onend=function(){dl("tts end")};u.onerror=function(e){dl("tts ERROR "+e.error)};
+speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){dl("tts exception "+e)}};
+document.getElementById("d3").onclick=function(){dau(new Audio("https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q=hello"),"google")};
+document.getElementById("d4").onclick=function(){dau(new Audio(QBASE+"114.mp3"),"quran")};
 document.getElementById("lvo").onclick=cycleVoice;
 document.getElementById("hello").onclick=function(){say("أهلاً يا بطل! أنا نور، هيا نتعلم معاً")};
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
