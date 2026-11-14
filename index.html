@@ -54,6 +54,11 @@ header{text-align:center;padding:14px 0 4px}
 .lgrid button{border:0;border-radius:18px;background:#E0457B;color:#fff;font:inherit;font-weight:800;font-size:34px;padding:6px 0;box-shadow:0 4px 0 rgba(0,0,0,.22);cursor:pointer}
 .lgrid button.on{background:var(--gold);color:#14224D}
 .lgrid button:focus-visible{outline:4px solid var(--gold);outline-offset:2px}
+.qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+.qgrid button{border:0;border-radius:16px;background:#1F8A5B;color:#fff;font:inherit;font-weight:700;font-size:17px;padding:10px 4px;box-shadow:0 4px 0 rgba(0,0,0,.22);cursor:pointer}
+.qgrid button.on{background:var(--gold);color:#14224D}
+.qgrid button:focus-visible{outline:4px solid var(--gold);outline-offset:2px}
+.card .Q{font-size:40px;font-weight:800;color:#1F8A5B;line-height:1.3}
 @media (prefers-reduced-motion:reduce){#nour,.mouth{animation:none!important}}
 </style>
 </head>
@@ -105,6 +110,13 @@ header{text-align:center;padding:14px 0 4px}
 <div class="lgrid" id="lg"></div>
 <div class="row"><button class="back" id="lbk">رجوع للرئيسية</button></div>
 </section>
+<section class="lt" id="qr">
+<div class="card"><div style="font-size:56px">📖</div><div class="Q" id="qT"></div><div class="Wd" id="qN" style="font-size:20px"></div>
+<div id="qn" aria-live="polite" style="font-size:14px;color:#B3261E;margin-top:6px"></div>
+<div class="row"><button class="back" id="qpr">السابق</button><button class="back" id="qpp" aria-label="تشغيل">▶️</button><button class="back" id="qrp" aria-label="تكرار">🔁</button><button class="back" id="qnx">التالي</button></div></div>
+<div class="qgrid" id="qg"></div>
+<div class="row"><button class="back" id="qbk">رجوع للرئيسية</button></div>
+</section>
 </div>
 <script>
 var W=[["📖","القرآن الكريم","هنا سيسمع الطفل سور جزء عمّ ويرددها مع نور."],
@@ -134,7 +146,7 @@ vi=(vi+1)%l.length;try{localStorage.setItem("nv",vi)}catch(e){}say(ttsText(ci))}
 function show(e,t,p,speak){document.getElementById("wE").textContent=e;document.getElementById("wT").textContent=t;
 document.getElementById("wP").textContent=p;home.classList.add("off");world.classList.add("on");if(speak)say(speak)}
 document.querySelectorAll(".tile").forEach(function(b){b.onclick=function(){var w=W[b.dataset.w];
-if(b.dataset.w==="1"){openLt();return}stars++;document.getElementById("st").textContent=stars;show(w[0],w[1],w[2]+" هذا القسم قيد البناء.","مرحباً بك في "+w[1])}});
+if(b.dataset.w==="1"){openLt();return}if(b.dataset.w==="0"){openQr();return}stars++;document.getElementById("st").textContent=stars;show(w[0],w[1],w[2]+" هذا القسم قيد البناء.","مرحباً بك في "+w[1])}});
 document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){
 var e=b.querySelector(".e").textContent;show(e,b.dataset.n,"هذه الصفحة قيد التصميم.","")}});
 document.getElementById("back").onclick=function(){world.classList.remove("on");home.classList.remove("off");try{speechSynthesis.cancel()}catch(e){}};
@@ -155,6 +167,28 @@ document.getElementById("lpr").onclick=function(){pick(ci-1,true)};
 document.getElementById("lnx").onclick=function(){pick(ci+1,true)};
 document.getElementById("lsp").onclick=function(){var a=A[ci];sayL(ci)};
 document.getElementById("lbk").onclick=function(){lt.classList.remove("on");home.classList.remove("off");try{speechSynthesis.cancel()}catch(e){}};
+var QBASE="https://cdn.mp3quran.net/audio/muhammad-ayyub/r1/",qtry=0;
+var S=[[78,"النبأ",40],[79,"النازعات",46],[80,"عبس",42],[81,"التكوير",29],[82,"الانفطار",19],[83,"المطففين",36],[84,"الانشقاق",25],[85,"البروج",22],[86,"الطارق",17],[87,"الأعلى",19],[88,"الغاشية",26],[89,"الفجر",30],[90,"البلد",20],[91,"الشمس",15],[92,"الليل",21],[93,"الضحى",11],[94,"الشرح",8],[95,"التين",8],[96,"العلق",19],[97,"القدر",5],[98,"البينة",8],[99,"الزلزلة",8],[100,"العاديات",11],[101,"القارعة",11],[102,"التكاثر",8],[103,"العصر",3],[104,"الهمزة",9],[105,"الفيل",5],[106,"قريش",4],[107,"الماعون",7],[108,"الكوثر",3],[109,"الكافرون",6],[110,"النصر",3],[111,"المسد",5],[112,"الإخلاص",4],[113,"الفلق",5],[114,"الناس",6]];
+var qr=document.getElementById("qr"),qg=document.getElementById("qg"),qa=new Audio(),qi=S.length-1,qcur=-1,qrep=false;
+function qnote(m){document.getElementById("qn").textContent=m||""}
+S.forEach(function(x,i){var b=document.createElement("button");b.textContent=x[1];b.onclick=function(){qpick(i,true)};qg.appendChild(b)});
+function qpick(i,go){qi=(i+S.length)%S.length;var x=S[qi];document.getElementById("qT").textContent="سورة "+x[1];
+document.getElementById("qN").textContent="عدد آياتها: "+x[2];qnote("");
+Array.prototype.forEach.call(qg.children,function(c,j){c.classList.toggle("on",j===qi)});
+qa.pause();qcur=-1;document.getElementById("qpp").textContent="▶️";if(go)qplay()}
+function qplay(){if(!QBASE){qnote("رابط التلاوة لم يُضف بعد، سنضيفه في الخطوة القادمة.");return}
+if(qcur!==qi){qa.src=QBASE+("00"+S[qi][0]).slice(-3)+".mp3";qtry=0;qcur=qi;stars++;document.getElementById("st").textContent=stars}
+var p=qa.play();if(p&&p.catch)p.catch(function(){qnote("تعذّر تشغيل التلاوة. تأكد من الإنترنت.")})}
+qa.onplay=function(){document.getElementById("qpp").textContent="⏸️"};
+qa.onpause=function(){document.getElementById("qpp").textContent="▶️"};
+qa.onerror=function(){if(qtry===0){qtry=1;qa.src=QBASE+S[qi][0]+".mp3";var p=qa.play();if(p&&p.catch)p.catch(function(){})}else{qnote("تعذّر تحميل التلاوة. تأكد من الإنترنت.")}};
+qa.onended=function(){if(qrep){qa.currentTime=0;qa.play()}};
+function openQr(){home.classList.add("off");qr.classList.add("on");qpick(qi,false)}
+document.getElementById("qpp").onclick=function(){if(!qa.paused){qa.pause()}else{qplay()}};
+document.getElementById("qpr").onclick=function(){qpick(qi-1,true)};
+document.getElementById("qnx").onclick=function(){qpick(qi+1,true)};
+document.getElementById("qrp").onclick=function(){qrep=!qrep;this.style.outline=qrep?"4px solid #1F8A5B":"none"};
+document.getElementById("qbk").onclick=function(){qa.pause();qr.classList.remove("on");home.classList.remove("off")};
 document.getElementById("lvo").onclick=cycleVoice;
 document.getElementById("hello").onclick=function(){say("أهلاً يا بطل! أنا نور، هيا نتعلم معاً")};
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
